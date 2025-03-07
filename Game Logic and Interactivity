@@ -1,0 +1,78 @@
+// Game Variables
+const clueElement = document.getElementById('clue');
+const answerInput = document.getElementById('answer');
+const submitButton = document.getElementById('submit');
+const resultElement = document.getElementById('result');
+const nextClueButton = document.getElementById('next-clue');
+const timeElement = document.getElementById('time');
+let timeLeft = 60; // Timer duration
+let timerInterval;
+let currentClueIndex = 0;
+const clues = [
+  {
+    clue: "Study of the mind, an expert's role mixed with research.",
+    answer: "psychology"
+  },
+  {
+    clue: "A giant leap for mankind, taking us to the moon.",
+    answer: "space"
+  }
+  // Add more clues here
+];
+
+// Display the current clue
+function displayClue() {
+  clueElement.textContent = clues[currentClueIndex].clue;
+  resultElement.textContent = '';
+  answerInput.value = '';
+  nextClueButton.style.display = 'none';
+  startTimer();
+}
+
+// Check the answer
+function checkAnswer() {
+  const userAnswer = answerInput.value.toLowerCase();
+  const correctAnswer = clues[currentClueIndex].answer.toLowerCase();
+  if (userAnswer === correctAnswer) {
+    resultElement.textContent = 'Correct! Well done!';
+    resultElement.style.color = 'green';
+    nextClueButton.style.display = 'block';
+    clearInterval(timerInterval);
+  } else {
+    resultElement.textContent = 'Incorrect. Try again!';
+    resultElement.style.color = 'red';
+  }
+}
+
+// Move to the next clue
+function nextClue() {
+  currentClueIndex++;
+  if (currentClueIndex < clues.length) {
+    displayClue();
+  } else {
+    resultElement.textContent = 'Congratulations! You completed all the puzzles.';
+    resultElement.style.color = 'blue';
+    nextClueButton.style.display = 'none';
+  }
+}
+
+// Start the timer
+function startTimer() {
+  timerInterval = setInterval(function() {
+    timeLeft--;
+    timeElement.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      resultElement.textContent = 'Time is up! The answer was: ' + clues[currentClueIndex].answer;
+      resultElement.style.color = 'red';
+      nextClueButton.style.display = 'block';
+    }
+  }, 1000);
+}
+
+// Event Listeners
+submitButton.addEventListener('click', checkAnswer);
+nextClueButton.addEventListener('click', nextClue);
+
+// Initialize the game
+displayClue();
